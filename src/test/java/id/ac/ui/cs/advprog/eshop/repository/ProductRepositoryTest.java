@@ -127,4 +127,25 @@ class ProductRepositoryTest {
         assertFalse(result);
     }
 
+    @Test
+    void testFindById_success() {
+        Product product = new Product();
+        product.setProductId("1");
+        product.setProductName("Test Product");
+        product.setProductQuantity(10);
+
+        productRepository.create(product);
+
+        Product found = productRepository.findById("1");
+
+        assertNotNull(found);
+        assertEquals("1", found.getProductId());
+    }
+
+    @Test
+    void testFindById_notFound() {
+        Product found = productRepository.findById("999");
+
+        assertNull(found);
+    }
 }
