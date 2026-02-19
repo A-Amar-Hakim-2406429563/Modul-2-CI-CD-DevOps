@@ -32,10 +32,6 @@ class ProductControllerTest {
 
     @Test
     void testCreatePost() throws Exception {
-
-        when(productService.create(org.mockito.ArgumentMatchers.any(Product.class)))
-                .thenReturn(new Product());
-
         mockMvc.perform(post("/product/create")
                         .param("productName", "Test")
                         .param("productQuantity", "10"))
@@ -54,9 +50,6 @@ class ProductControllerTest {
 
     @Test
     void testDelete() throws Exception {
-
-        when(productService.delete("1")).thenReturn(true);
-
         mockMvc.perform(get("/product/delete/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/product/list"));
@@ -73,10 +66,6 @@ class ProductControllerTest {
 
     @Test
     void testEditPost() throws Exception {
-
-        when(productService.update(org.mockito.ArgumentMatchers.any(Product.class)))
-                .thenReturn(true);
-
         mockMvc.perform(post("/product/edit")
                         .param("productId", "1")
                         .param("productName", "Test")
