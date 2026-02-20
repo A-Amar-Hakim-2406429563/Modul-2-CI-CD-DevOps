@@ -25,8 +25,9 @@ jobs:
       - name: Run PMD
         uses: pmd/pmd-github-action@v2
         with:
-          version: '7.0.0-rc4'   # Wajib pake 7.0.0-rc4 krn Java 21
+          version: '7.0.0-rc4'  # Wajib pake 7.0.0-rc4 krn Java 21
           sourcePath: 'src'
+          analyzeModifiedFilesOnly: false
           rulesets: >
             category/java/errorprone.xml,
             category/java/bestpractices.xml,
