@@ -67,3 +67,31 @@ Secara keseluruhan, implementasi fitur Edit dan Delete Product telah menerapkan 
 - Hal tersebut menurunkan kualitas clean code.
 - Solusi yang lebih baik: Bisa gunain base class utk setup yg sama dan menghindarin copy-paste biar gk terjadi duplikasi kode.
 - Dengan begitu, kode test akan jadi lebih rapi, mudah dibaca, dan mudah dikembangkan gitu.
+
+# Reflection 3 (Module 2)
+
+## 1. Code Quality Issues yang Diperbaiki
+Sebelum saya menambahkan code quality tool, saya sudah membuat CI pipeline yang menjalankan unit test secara otomatis setiap kali ada push ke repository menggunakan GitHub Actions. 
+Setelah itu, pada tutorial 2 ini saya diminta untuk menambahkan tool code scanning tambahan ke dalam proses CI/CD.
+Disini saya memilih menggunakan PMD sebagai tools code analysis saya. PMD iitu digunakan untuk mendeteksi potensi masalah dalam kode seperti bad practice, unused code, kemungkinan bug, dan pelanggaran terhadap coding standard. Intinya PMD ini saya gunakan untuk meningkatkan code quality.
+Setelah itu saya membuat workflow baru yang akan menjalankan PMD setiap kali ada push ke semua branch, lalu meng-commit file workflow tersebut ke branch module-2-exercise.
+Setelah workflow itu dijalankan, saya melihat hasil analisis dari PMD dan menemukan adanya code quality issue yang terdeteksi (warning/error pada hasil run workflow), contohnya adalah "PMD detected 18 violations.". Dari situ saya mengetahui bahwa ada bagian kode yang tidak sesuai best practice.
+
+Untuk memperbaikinya yang saya lakukan adalah:
+- Membaca pesan error/warning dari hasil run PMD di GitHub Actions.
+- Mengidentifikasi bagian kode yang bermasalah.
+- Memperbaiki kode tersebut (misalnya dengan merapikan struktur atau mengikuti best practice yang direkomendasikan).
+- Melakukan commit terpisah khusus untuk perbaikan tersebut.
+- Menjalankan ulang workflow dan memastikan issue tersebut sudah tidak muncul lagi.
+- Nahh dengan cara ini, saya memastikan bahwa kode menjadi lebih bersih dan sesuai standar kualitas.
+
+Disini code quality issue yang aku terapkan ada 1, yaitu fix ImmutableField:
+- Disini saya mendeteksi error "Field 'productData' may be declared final"
+- Setelah itu saya langsung pergi ke ProductRepository dan mengubah kode yang tadinya
+  private List<Product> productData = new ArrayList<>(); --> private List<Product> productData = new ArrayList<>();
+
+## 2. Apakah Sudah Memenuhi Continuous Integration dan Continuous Deployment?
+Menurut saya, implementasi yang saya buat sudah memenuhi konsep Continuous Integration (CI) dan Continuous Deployment (CD).
+- Pertama, setiap kali ada push ke repository, GitHub Actions secara otomatis menjalankan unit test dan juga code analysis menggunakan PMD. Ini sudah memenuhi konsep Continuous Integration krn setiap perubahan kode langsung diuji dan dianalisis secara otomatis.
+- Kedua, setelah branch module-2-exercise digabungkan ke branch main, aplikasi secara otomatis ter-deploy ke PaaS (Koyeb). Proses deployment ini berjalan tanpa perlu dilakukan secara manual setiap kali ada perubahan di branch utama, sehingga sudah memenuhi konsep Continuous Deployment.
+Dengan adanya pipeline ini, proses testing, pengecekan kualitas kode, dan deployment menjadi otomatis dan lebih terstruktur.
