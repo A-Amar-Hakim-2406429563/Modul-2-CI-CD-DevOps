@@ -94,4 +94,5 @@ Disini code quality issue yang aku terapkan ada 1, yaitu fix ImmutableField:
 Menurut saya, implementasi yang saya buat sudah memenuhi konsep Continuous Integration (CI) dan Continuous Deployment (CD).
 - Pertama, setiap kali ada push ke repository, GitHub Actions secara otomatis menjalankan unit test dan juga code analysis menggunakan PMD. Ini sudah memenuhi konsep Continuous Integration krn setiap perubahan kode langsung diuji dan dianalisis secara otomatis.
 - Kedua, setelah branch module-2-exercise digabungkan ke branch main, aplikasi secara otomatis ter-deploy ke PaaS (Koyeb). Proses deployment ini berjalan tanpa perlu dilakukan secara manual setiap kali ada perubahan di branch utama, sehingga sudah memenuhi konsep Continuous Deployment.
+
 Dengan adanya pipeline ini, proses testing, pengecekan kualitas kode, dan deployment menjadi otomatis dan lebih terstruktur.
