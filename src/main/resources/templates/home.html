@@ -3,8 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <title>ADV Shop</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      background-color: #f4f6f9;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      margin-top: 20px;
+      font-size: 16px;
+      color: white;
+      background-color: #007bff;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
+
 <body>
-  <h3>Welcome</h3>
+
+<h1><b>Welcome to ADV Shop</b></h1>
+<h3>Welcome</h3>
+<p>Your simple go-to eShop</p>
+
+<a th:href="@{/product/list}" class="btn">
+  View Product List
+</a>
+
 </body>
 </html>
