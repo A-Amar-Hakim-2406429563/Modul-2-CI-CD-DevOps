@@ -90,6 +90,10 @@ Disini code quality issue yang aku terapkan ada 1, yaitu fix ImmutableField:
 - Setelah itu saya langsung pergi ke ProductRepository dan mengubah kode yang tadinya
   private List<Product> productData = new ArrayList<>(); --> private List<Product> productData = new ArrayList<>();
 
+Lalu ada 1 lagi yang baru aku terapkan, yaitu fix assertion nya dengan cara menghapus UnnecessaryBooleanAssertion:
+- jadi aku tadinya hanya pakai assertTrue(true) saja, tapi aku ubah menggunakan .andExpect() sebagai validasi utama nya
+  - ini itu penting krn test itu harus benar2 memverifikasi behavior, bukan cuman sekedar lolos doang.
+
 ## 2. Apakah Sudah Memenuhi Continuous Integration dan Continuous Deployment?
 Menurut saya, implementasi yang saya buat sudah memenuhi konsep Continuous Integration (CI) dan Continuous Deployment (CD).
 - Pertama, setiap kali ada push ke repository, GitHub Actions secara otomatis menjalankan unit test dan juga code analysis menggunakan PMD. Ini sudah memenuhi konsep Continuous Integration krn setiap perubahan kode langsung diuji dan dianalisis secara otomatis.
