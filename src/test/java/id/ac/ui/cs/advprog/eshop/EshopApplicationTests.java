@@ -12,4 +12,9 @@ class EshopApplicationTests {
     void contextLoads() {
         assertNotNull(EshopApplication.class);
     }
+
+    @Test
+    void mainMethodRuns() {
+        EshopApplication.main(new String[]{});
+    }
 }
