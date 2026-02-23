@@ -19,8 +19,7 @@ class HomeControllerTest {
     void testHomePage() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("home"));
-
-        assertTrue(true);
+                .andExpect(view().name("home"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Welcome")));
     }
 }
