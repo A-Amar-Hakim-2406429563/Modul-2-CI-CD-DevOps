@@ -79,3 +79,4 @@ class ProductControllerTest {
                 .andExpect(redirectedUrl("/product/list"));
     }
 }
+
