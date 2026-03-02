@@ -23,6 +23,9 @@ class ProductControllerTest {
     @MockBean
     private ProductService productService;
 
+    @MockBean
+    private id.ac.ui.cs.advprog.eshop.service.CarServiceImpl carService;
+
     @Test
     void testCreatePage() throws Exception {
         mockMvc.perform(get("/product/create"))
