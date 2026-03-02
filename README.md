@@ -100,3 +100,72 @@ Menurut saya, implementasi yang saya buat sudah memenuhi konsep Continuous Integ
 - Kedua, setelah branch module-2-exercise digabungkan ke branch main, aplikasi secara otomatis ter-deploy ke PaaS (Koyeb). Proses deployment ini berjalan tanpa perlu dilakukan secara manual setiap kali ada perubahan di branch utama, sehingga sudah memenuhi konsep Continuous Deployment.
 
 Dengan adanya pipeline ini, proses testing, pengecekan kualitas kode, dan deployment menjadi otomatis dan lebih terstruktur.
+
+# Reflection (Module 3)
+
+## 1. Explain what principles you apply to your project!
+1) Single Responsibility Principle (SRP):
+- Intinya itu aku bikin ProductController & CarController terpisah karena 2 java class itu memiliki fungsi yang berbeda.
+
+2) Single Responsibility Principle (SRP):
+- SRP selanjutnya aku ini adalah memisahkan fungsi uuid generator dari class CarRepository menjadi method di class class baru yang bernama class UuidGenerator yg
+  isinya sekarang ini baru ada method generateId().
+
+3) LSP
+- Intinya aku membuat CarController tidak meng-extends ProductController karena harusnya 2 class ini tidak ada kaitannya satu sama lain sehingga harusnya itu ProductController 
+  bukan merupakan superclass dari CarController. 
+
+4) OCP
+- Aku ubah kode method update di CarRepository yang tadinya:
+-     public Car update(String id, Car updatedCar) {
+        for (int i = 0; i < carData.size(); i++) {
+            Car car = carData.get(i);
+            if (car.getCarId().equals(id)) {
+                // Update the existing car with the new information
+                car.setCarName(updatedCar.getCarName());
+                car.setCarColor(updatedCar.getCarColor());
+                car.setCarQuantity(updatedCar.getCarQuantity());
+                return car;
+            }
+        }
+        return null; // Handle the case where the car is not found
+  }
+- menjadi:
+-     public Car update(String id, Car updatedCar) {
+        for (int i = 0; i < carData.size(); i++) {
+            if (carData.get(i).getCarId().equals(id)) {
+                updatedCar.setCarId(id);
+                carData.set(i, updatedCar);
+                return updatedCar;
+            }
+        }
+        return null;
+  }
+- Kode yang baru itu membuat method update ini menjadi OCP artinya bila Car itu nanti mau update atribut yang lain gitu,
+  maka car ini tetep bakal mempertahankan kode method nya itu dan tetep bisa meng-extent atribut baru yang mau ditambahin gitu.
+- Contoh: Kalo Car nambah 10 field lagi, maka repository tidak berubah.
+
+5) DIP (Dependency Inversion Principle)
+- Intinya aku buat Interface CarRepository gitu dengan nama CarRepositoryInterface gitu yg mana ini bakal di implemen sama class CarRepository
+- Menurutku ini sudah sesuai dengan definisi dari DIP itu sendiri yg mmengatakan "High-level module tidak boleh bergantung ke low-level module.
+  Keduanya harus bergantung ke abstraksi (interface).".
+- Jadi karena di proyek ini:
+- Service = high level 
+- Repository = low level
+- maka aku coba terpain DIP
+
+## 2) Explain the advantages of applying SOLID principles to your project with examples.
+Menurut aku keuntungan pakai SOLID principles ini yang pastinya sama dengan tujuan dari SOLID itu sendiri yaitu adalah untuk memudahkan pengembangan software aku ini.
+Intinya dengan adanya SOLID principles:
+- Kode lebih terstruktur dan jelas tanggung jawabnya
+- Mudah dikembangkan tanpa merusak kode lama dan mudah di scale juga
+- Lebih fleksibel kalo mau ganti implementasi
+- Lebih gampang dites (testing)
+
+## 3) Explain the disadvantages of not applying SOLID principles to your project with examples.
+Nahh sekarang lanjut ke kerugiannya kalo gk pake SOLID ini itu yg pastinya adalah menyusahkan aku atau orang yang nanti lihat kode aku kedepannya untuk mengembangkan kode yang ada di proyek aku ini.
+Intinya kalo gk pakai SOLID:
+- Satu perubahan kecil bisa merusak banyak bagian
+- Kode saling ketergantungan terlalu kuat (tightly coupled)
+- Sulit dikembangkan ke depannya
+- Lebih rawan bug
