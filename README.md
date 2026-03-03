@@ -111,11 +111,11 @@ Dengan adanya pipeline ini, proses testing, pengecekan kualitas kode, dan deploy
 - SRP selanjutnya aku ini adalah memisahkan fungsi uuid generator dari class CarRepository menjadi method di class class baru yang bernama class UuidGenerator yg
   isinya sekarang ini baru ada method generateId().
 
-3) LSP
+3) Liskov Substitution Principle (LSP) 
 - Intinya aku membuat CarController tidak meng-extends ProductController karena harusnya 2 class ini tidak ada kaitannya satu sama lain sehingga harusnya itu ProductController 
   bukan merupakan superclass dari CarController. 
 
-4) OCP
+4) Open-Closed Principle (OCP)
 - Aku ubah kode method update di CarRepository yang tadinya:
 -     public Car update(String id, Car updatedCar) {
         for (int i = 0; i < carData.size(); i++) {
@@ -144,6 +144,7 @@ Dengan adanya pipeline ini, proses testing, pengecekan kualitas kode, dan deploy
 - Kode yang baru itu membuat method update ini menjadi OCP artinya bila Car itu nanti mau update atribut yang lain gitu,
   maka car ini tetep bakal mempertahankan kode method nya itu dan tetep bisa meng-extent atribut baru yang mau ditambahin gitu.
 - Contoh: Kalo Car nambah 10 field lagi, maka repository tidak berubah.
+- Ctt: ini juga berlaku buat yg ProductRepository
 
 5) DIP (Dependency Inversion Principle)
 - Intinya aku buat Interface CarRepository gitu dengan nama CarRepositoryInterface gitu yg mana ini bakal di implemen sama class CarRepository
@@ -153,6 +154,7 @@ Dengan adanya pipeline ini, proses testing, pengecekan kualitas kode, dan deploy
 - Service = high level 
 - Repository = low level
 - maka aku coba terpain DIP
+- Ctt: ini juga berlaku buat yg ProductRepository dan ProductRepositoryInterface
 
 ## 2) Explain the advantages of applying SOLID principles to your project with examples.
 Menurut aku keuntungan pakai SOLID principles ini yang pastinya sama dengan tujuan dari SOLID itu sendiri yaitu adalah untuk memudahkan pengembangan software aku ini.
