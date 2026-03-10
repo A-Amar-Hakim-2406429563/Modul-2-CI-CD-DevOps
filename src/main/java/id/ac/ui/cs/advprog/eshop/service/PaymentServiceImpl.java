@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.eshop.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -57,25 +58,50 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private String determineInitialStatus(String method, Map<String, String> paymentData) {
-        if (PAYMENT_METHOD_VOUCHER.equals(method)) {
+        if (isVoucherMethod(method)) {
             return isValidVoucher(paymentData) ? PAYMENT_STATUS_SUCCESS : PAYMENT_STATUS_REJECTED;
         }
 
-        if (PAYMENT_METHOD_COD.equals(method) && hasBlankValue(paymentData, COD_ADDRESS_KEY, COD_DELIVERY_FEE_KEY)) {
+        if (isCodMethod(method) && hasBlankValue(paymentData, COD_ADDRESS_KEY, COD_DELIVERY_FEE_KEY)) {
             return PAYMENT_STATUS_REJECTED;
         }
 
         return PAYMENT_STATUS_PENDING;
     }
 
+    private boolean isVoucherMethod(String method) {
+        return PAYMENT_METHOD_VOUCHER.equals(normalizeMethod(method));
+    }
+
+    private boolean isCodMethod(String method) {
+        return PAYMENT_METHOD_COD.equals(normalizeMethod(method));
+    }
+
+    private String normalizeMethod(String method) {
+        if (method == null) {
+            return "";
+        }
+
+        return method.trim().toUpperCase(Locale.ROOT);
+    }
+
     private boolean isValidVoucher(Map<String, String> paymentData) {
+        if (paymentData == null) {
+            return false;
+        }
+
         String voucherCode = paymentData.get(VOUCHER_CODE_KEY);
-        if (voucherCode == null || voucherCode.length() != VOUCHER_LENGTH || !voucherCode.startsWith(VOUCHER_PREFIX)) {
+        if (voucherCode == null) {
+            return false;
+        }
+
+        String normalizedVoucherCode = voucherCode.trim().toUpperCase(Locale.ROOT);
+        if (normalizedVoucherCode.length() != VOUCHER_LENGTH || !normalizedVoucherCode.startsWith(VOUCHER_PREFIX)) {
             return false;
         }
 
         int digitCount = 0;
-        for (char currentChar : voucherCode.toCharArray()) {
+        for (char currentChar : normalizedVoucherCode.toCharArray()) {
             if (Character.isDigit(currentChar)) {
                 digitCount++;
             }
@@ -85,9 +111,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private boolean hasBlankValue(Map<String, String> paymentData, String... keys) {
+        if (paymentData == null) {
+            return true;
+        }
+
         for (String key : keys) {
             String value = paymentData.get(key);
-            if (value == null || value.isEmpty()) {
+            if (value == null || value.trim().isEmpty()) {
                 return true;
             }
         }
