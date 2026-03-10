@@ -171,3 +171,71 @@ Intinya kalo gk pakai SOLID:
 - Kode saling ketergantungan terlalu kuat (tightly coupled)
 - Sulit dikembangkan ke depannya
 - Lebih rawan bug
+
+# Reflection (Module 4)
+
+## 1. Reflection on TDD Workflow
+Menurut aku, workflow Test-Driven Development (TDD) di tutorial ini cukup membantu dalam proses development. 
+Dengan urutan RED --> GREEN --> REFACTOR, aku jadi lebih terarah saat membuat fitur. 
+Di tahap RED, aku membuat test terlebih dulu untuk memahami kebutuhan dari fitur yang akan dibuat. 
+Lalu di tahap GREEN, aku menulis implementasi kode yang paling sederhana supaya test bisa lolos. 
+Setelah itu di tahap REFACTOR, kode bisa dirapikan tanpa merusak fungsi yang sudah berjalan.
+
+Menurut aku metode ini cukup efektif krn membantu mengurangi bug dan membuat kode lebih terstruktur. 
+Tapi kadang di awal memang terasa lebih lama dan lebih rumit gitu krn harus menulis test dulu. Kedepannya, 
+aku perlu lebih terbiasa membuat test case yg jelas sebelum mulai menulis kode supaya proses development bisa lebih efisien.
+
+## 2. Reflection on F.I.R.S.T Principles
+Menurut aku, unit test yg dibuat di tutorial ini sudah cukup mengikuti prinsip F.I.R.S.T.
+
+1. Fast --> Test berjalan cepat krn hanya menguji logic sederhana dan menggunakan mock repository.
+2. Independent --> Setiap test tidak bergantung pada test lain krn data di setup ulang menggunakan @BeforeEach.
+3. Repeatable --> Test bisa dijalankan berkali-kali dgn hasil yg sama krn tidak bergantung pada database atau sistem luar.
+4. Self-Validating --> Test menggunakan assertion seperti assertEquals, assertNull, dan assertThrows sehingga hasil test langsung jelas apakah berhasil atau gagal.
+5. Timely --> Test dibuat sebelum implementasi kode, sesuai dgn konsep TDD.
+
+Kedepannya, aku bisa meningkatkan kualitas test dgn membuat test case yg lebih fokus pada satu behavior agar test lebih jelas dan mudah dipahami.
+
+# Bonus Reflection - Bonus 2
+
+## 1. Pendapat aku tentang kode partner aku
+Link repo github yang temen yang aku cek (nizar): https://github.com/A-Ahmad-Nizar-Sauki-2306152046/Modul-2-CI-CD-DevOpsFile/tree/refactor/2406429563
+
+Menurut aku, kode partner aku secara umum udah jalan dengan baik dan struktur utamanya juga udh cukup jelas krn dipisah jadi controller, service, repository, dan model. Jadi pas dibaca, alur besarnya masih gampang diikutin.
+
+Tapi, masih ada beberapa bagian yg bisa dibenerin supaya maintainability-nya lebih bagus. Yang paling kerasa ada di `PaymentServiceImpl`, karena masih ada beberapa string yang ditulis langsung di dalam kode seperti `VOUCHER`, `BANK`, `SUCCESS`, dan `REJECTED`. Buat sekarang mungkin masih aman, tapi kalau nanti logic payment makin nambah, bagian ini bakal lebih susah dirawat dan lebih gampang kena typo atau bug kecil.
+
+## 2. Kontribusi yang aku lakuin ke kode partner aku
+
+Kontribusi yang aku lakuin adalah review kode partner aku, cari code smell yang paling aman dan relevan buat diperbaiki, lalu aku refactor bagian `PaymentServiceImpl`.
+
+Perubahan yang aku lakuin:
+
+- Merapikan dependency injection jadi constructor injection.
+- Mengganti string yang berulang jadi konstanta supaya lebih rapi.
+- Memecah logic pembuatan payment dan update status ke method terpisah biar class-nya lebih gampang dibaca.
+- Menjalankan test setelah refactor buat mastiin fitur lain tetap aman.
+
+## 3. Code smell yang aku temuin
+
+Code smell utama yang aku temuin adalah **magic string** dan **logic yang masih numpuk di satu class**.
+
+Di `PaymentServiceImpl`, ada beberapa nilai penting yang masih ditulis langsung sebagai string. Ini kurang bagus buat maintainability karena:
+
+- rawan typo,
+- susah di trace kalau ada perubahan aturan bisnis,
+- dan bikin kode makin panjang kalau nanti method pembayaran atau statusnya bertambah.
+
+Selain itu, logic buat bikin objek payment dan logic buat update status order masih ditulis langsung di method utama, jadi tanggung jawab class ini terasa terlalu padat.
+
+## 4. Langkah refactoring yang aku saranin dan aku eksekusi
+
+Langkah refactoring yang aku saranin dan aku eksekusi adalah:
+
+1. Mengganti field injection menjadi constructor injection supaya dependency lebih jelas dan lebih enak diuji.
+2. Mengubah string yang berulang menjadi konstanta supaya lebih aman dan konsisten.
+3. Memisahkan logic pembuatan payment ke helper method `createPayment`.
+4. Memisahkan logic update status order ke helper method `updateOrderStatus`.
+5. Menjalankan `./gradlew.bat test` setelah refactor untuk memastikan behavior lama tetap aman.
+
+Hasilnya, kode jadi lebih rapi, lebih gampang dibaca, dan lebih enak dikembangin ke depannya tanpa mengubah perilaku utama dari fitur payment.
