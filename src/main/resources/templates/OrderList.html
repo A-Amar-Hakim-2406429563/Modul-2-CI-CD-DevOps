@@ -47,11 +47,12 @@
                     <th>Order Time</th>
                     <th>Status</th>
                     <th>Products</th>
+                    <th class="text-end">Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(orders)}">
-                    <td class="text-center text-muted" colspan="4">No orders found for this customer.</td>
+                    <td class="text-center text-muted" colspan="5">No orders found for this customer.</td>
                 </tr>
                 <tr th:each="order : ${orders}">
                     <td th:text="${order.id}">order-id</td>
@@ -64,6 +65,12 @@
                             <span th:text="${product.productName}">Product</span>
                             <span class="text-muted" th:text="' x' + ${product.productQuantity}">x1</span>
                         </div>
+                    </td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-primary"
+                           th:if="${order.status == 'WAITING_PAYMENT'}"
+                           th:href="@{/order/pay/{orderId}(orderId=${order.id})}">Pay</a>
+                        <span class="text-muted small" th:unless="${order.status == 'WAITING_PAYMENT'}">No action</span>
                     </td>
                 </tr>
                 </tbody>
