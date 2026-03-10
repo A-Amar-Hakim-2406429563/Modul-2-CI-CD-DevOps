@@ -83,6 +83,7 @@
     <table class="table table-hover align-middle">
       <thead>
       <tr>
+        <th>Product ID</th>
         <th>Product Name</th>
         <th>Quantity</th>
         <th class="text-center">Actions</th>
@@ -90,6 +91,7 @@
       </thead>
       <tbody>
       <tr th:each="product: ${products}">
+        <td th:text="${product.productId}"></td>
         <td th:text="${product.productName}"></td>
         <td th:text="${product.productQuantity}"></td>
         <td class="text-center">
