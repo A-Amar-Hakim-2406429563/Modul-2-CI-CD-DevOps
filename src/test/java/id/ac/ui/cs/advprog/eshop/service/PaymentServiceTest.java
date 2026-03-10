@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,12 +64,13 @@ class PaymentServiceTest {
         mockSaveReturnsPayment();
 
         Map<String, String> data = new HashMap<>();
-        data.put("voucherCode", "ESHOP1234ABC5678");
+        data.put("address", "Jl. Margonda Raya No. 1");
+        data.put("deliveryFee", "15000");
 
-        Payment result = paymentService.addPayment(order, VOUCHER_METHOD, data);
+        Payment result = paymentService.addPayment(order, COD_METHOD, data);
 
         assertNotNull(result.getId());
-        assertEquals(VOUCHER_METHOD, result.getMethod());
+        assertEquals(COD_METHOD, result.getMethod());
         assertEquals(order, result.getOrder());
         assertEquals(PAYMENT_STATUS_PENDING, result.getStatus());
     }
