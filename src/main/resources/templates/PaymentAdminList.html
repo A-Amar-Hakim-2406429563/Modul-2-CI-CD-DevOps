@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Admin List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8fafc;
+        }
+
+        .admin-card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
+        }
+
+        .admin-title {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        thead {
+            background: #0f172a;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <div class="admin-card p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="admin-title h3 mb-1">All Payments</h1>
+                <p class="text-muted mb-0">Admin overview for all submitted payments.</p>
+            </div>
+            <a class="btn btn-outline-primary" th:href="@{/payment/detail}">Customer Search</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Payment ID</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Order ID</th>
+                    <th class="text-end">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(payments)}">
+                    <td class="text-center text-muted" colspan="5">No payment records available.</td>
+                </tr>
+                <tr th:each="payment : ${payments}">
+                    <td th:text="${payment.id}">payment-id</td>
+                    <td th:text="${payment.method}">VOUCHER</td>
+                    <td th:text="${payment.status}">PENDING</td>
+                    <td th:text="${payment.order.id}">order-id</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-dark" th:href="@{/payment/admin/detail/{paymentId}(paymentId=${payment.id})}">Review</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
