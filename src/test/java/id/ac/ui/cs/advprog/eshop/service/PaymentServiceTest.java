@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.eshop.service;
 
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
+import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.repository.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,9 +30,20 @@ class PaymentServiceTest {
 
     Order order;
 
+    private ArrayList<Product> createProducts() {
+        Product product = new Product();
+        product.setProductId("product-1");
+        product.setProductName("Test Product");
+        product.setProductQuantity(1);
+
+        ArrayList<Product> products = new ArrayList<>();
+        products.add(product);
+        return products;
+    }
+
     @BeforeEach
     void setUp() {
-        order = new Order("1", new ArrayList<>(), 100L, "User");
+        order = new Order("1", createProducts(), 100L, "User");
     }
 
     @Test
@@ -39,7 +51,7 @@ class PaymentServiceTest {
         Map<String, String> data = new HashMap<>();
         data.put("voucherCode", "ESHOP1234ABC5678");
 
-        Payment payment = new Payment("1", "VOUCHER", data);
+        Payment payment = new Payment("1", "VOUCHER", order, data);
 
         when(paymentRepository.save(any())).thenReturn(payment);
 

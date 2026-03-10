@@ -12,9 +12,7 @@ public class PaymentRepository {
     private List<Payment> paymentData = new ArrayList<>();
 
     public Payment save(Payment payment) {
-
         int i = 0;
-
         for (Payment saved : paymentData) {
             if (saved.getId().equals(payment.getId())) {
                 paymentData.remove(i);

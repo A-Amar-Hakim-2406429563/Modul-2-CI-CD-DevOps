@@ -13,14 +13,16 @@ public class Payment {
     private String method;
     private String status;
     private Map<String, String> paymentData;
+    private Order order;
 
-    public Payment(String id, String method, Map<String, String> paymentData) {
-        this(id, method, "PENDING", paymentData);
+    public Payment(String id, String method, Order order, Map<String, String> paymentData) {
+        this(id, method, order, "PENDING", paymentData);
     }
 
-    public Payment(String id, String method, String status, Map<String, String> paymentData) {
+    public Payment(String id, String method, Order order, String status, Map<String, String> paymentData) {
         this.id = id;
         this.method = method;
+        this.order = order;
         this.status = status;
         this.paymentData = paymentData;
     }
