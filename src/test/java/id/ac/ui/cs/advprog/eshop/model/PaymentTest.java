@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -25,21 +27,24 @@ class PaymentTest {
     void testCreatePayment() {
 
         Map<String, String> data = new HashMap<>();
-        data.put("voucherCode", "ESHOP1234ABC5678");
+        data.put("voucherCode", "ESHOP1234ABC5678"); // Ini adalah voucher yang valid
 
         Order order = new Order(
                 "order-1",
-            createProducts(),
+                createProducts(),
                 System.currentTimeMillis(),
                 "Tester"
         );
 
-        Payment payment = new Payment("1", "VOUCHER", order, data);
+        // REFACTOR: Menggunakan Enum PaymentMethod
+        Payment payment = new Payment("1", PaymentMethod.VOUCHER.getValue(), order, data);
 
         assertEquals("1", payment.getId());
-        assertEquals("VOUCHER", payment.getMethod());
+        assertEquals(PaymentMethod.VOUCHER.getValue(), payment.getMethod());
         assertEquals(data, payment.getPaymentData());
         assertEquals(order, payment.getOrder());
-        assertEquals("PENDING", payment.getStatus());
+
+        // REFACTOR: Karena voucher valid, Payment yang sudah pintar akan langsung mengesetnya jadi SUCCESS
+        assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
     }
 }
