@@ -10,7 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+// Mengganti import MockBean yang sudah usang dengan MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -33,10 +34,10 @@ class OrderControllerFunctionalTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean // Mengganti @MockBean
     private OrderService orderService;
 
-    @MockBean
+    @MockitoBean // Mengganti @MockBean
     private PaymentService paymentService;
 
     private Order order;
@@ -97,7 +98,8 @@ class OrderControllerFunctionalTest {
         Map<String, String> paymentData = new HashMap<>();
         paymentData.put("voucherCode", "ESHOP1234ABC5678");
 
-        Payment payment = new Payment("payment-1", "VOUCHER", order, "SUCCESS", paymentData);
+        // FIX: Menghapus parameter "SUCCESS" karena status sudah di-handle di dalam Model
+        Payment payment = new Payment("payment-1", "VOUCHER", order, paymentData);
 
         when(orderService.findById("order-1")).thenReturn(order);
         when(paymentService.addPayment(eq(order), eq("VOUCHER"), anyMap())).thenReturn(payment);

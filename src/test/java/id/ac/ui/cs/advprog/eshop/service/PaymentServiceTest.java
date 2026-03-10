@@ -1,5 +1,8 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
 import id.ac.ui.cs.advprog.eshop.model.Product;
@@ -25,11 +28,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
 
-    private static final String VOUCHER_METHOD = "VOUCHER";
-    private static final String COD_METHOD = "COD";
-    private static final String PAYMENT_STATUS_PENDING = "PENDING";
-    private static final String PAYMENT_STATUS_SUCCESS = "SUCCESS";
-    private static final String PAYMENT_STATUS_REJECTED = "REJECTED";
+    // REFACTOR: Magic Strings dihapus dan digantikan sepenuhnya oleh Enum
 
     @InjectMocks
     PaymentServiceImpl paymentService;
@@ -67,12 +66,12 @@ class PaymentServiceTest {
         data.put("address", "Jl. Margonda Raya No. 1");
         data.put("deliveryFee", "15000");
 
-        Payment result = paymentService.addPayment(order, COD_METHOD, data);
+        Payment result = paymentService.addPayment(order, PaymentMethod.COD.getValue(), data);
 
         assertNotNull(result.getId());
-        assertEquals(COD_METHOD, result.getMethod());
+        assertEquals(PaymentMethod.COD.getValue(), result.getMethod());
         assertEquals(order, result.getOrder());
-        assertEquals(PAYMENT_STATUS_PENDING, result.getStatus());
+        assertEquals(PaymentStatus.PENDING.getValue(), result.getStatus());
     }
 
     @Test
@@ -82,9 +81,9 @@ class PaymentServiceTest {
         Map<String, String> data = new HashMap<>();
         data.put("voucherCode", "ESHOP1234ABC5678");
 
-        Payment result = paymentService.addPayment(order, VOUCHER_METHOD, data);
+        Payment result = paymentService.addPayment(order, PaymentMethod.VOUCHER.getValue(), data);
 
-        assertEquals(PAYMENT_STATUS_SUCCESS, result.getStatus());
+        assertEquals(PaymentStatus.SUCCESS.getValue(), result.getStatus());
     }
 
     @Test
@@ -94,9 +93,9 @@ class PaymentServiceTest {
         Map<String, String> data = new HashMap<>();
         data.put("voucherCode", "INVALID");
 
-        Payment result = paymentService.addPayment(order, VOUCHER_METHOD, data);
+        Payment result = paymentService.addPayment(order, PaymentMethod.VOUCHER.getValue(), data);
 
-        assertEquals(PAYMENT_STATUS_REJECTED, result.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), result.getStatus());
     }
 
     @Test
@@ -107,9 +106,9 @@ class PaymentServiceTest {
         data.put("address", "Jl. Margonda Raya No. 1");
         data.put("deliveryFee", "15000");
 
-        Payment result = paymentService.addPayment(order, COD_METHOD, data);
+        Payment result = paymentService.addPayment(order, PaymentMethod.COD.getValue(), data);
 
-        assertEquals(PAYMENT_STATUS_PENDING, result.getStatus());
+        assertEquals(PaymentStatus.PENDING.getValue(), result.getStatus());
     }
 
     @Test
@@ -120,34 +119,34 @@ class PaymentServiceTest {
         data.put("address", "");
         data.put("deliveryFee", "15000");
 
-        Payment result = paymentService.addPayment(order, COD_METHOD, data);
+        Payment result = paymentService.addPayment(order, PaymentMethod.COD.getValue(), data);
 
-        assertEquals(PAYMENT_STATUS_REJECTED, result.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), result.getStatus());
     }
 
     @Test
     void testSetStatusToSuccessUpdatesOrderStatus() {
-        Payment payment = new Payment("1", VOUCHER_METHOD, order, new HashMap<>());
+        Payment payment = new Payment("1", PaymentMethod.VOUCHER.getValue(), order, new HashMap<>());
 
-        Payment result = paymentService.setStatus(payment, PAYMENT_STATUS_SUCCESS);
+        Payment result = paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue());
 
-        assertEquals(PAYMENT_STATUS_SUCCESS, result.getStatus());
-        assertEquals(PAYMENT_STATUS_SUCCESS, order.getStatus());
+        assertEquals(PaymentStatus.SUCCESS.getValue(), result.getStatus());
+        assertEquals(OrderStatus.SUCCESS.getValue(), order.getStatus());
     }
 
     @Test
     void testSetStatusToRejectedUpdatesOrderStatusToFailed() {
-        Payment payment = new Payment("1", COD_METHOD, order, new HashMap<>());
+        Payment payment = new Payment("1", PaymentMethod.COD.getValue(), order, new HashMap<>());
 
-        Payment result = paymentService.setStatus(payment, PAYMENT_STATUS_REJECTED);
+        Payment result = paymentService.setStatus(payment, PaymentStatus.REJECTED.getValue());
 
-        assertEquals(PAYMENT_STATUS_REJECTED, result.getStatus());
-        assertEquals("FAILED", order.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
     }
 
     @Test
     void testGetPaymentReturnsRepositoryResult() {
-        Payment payment = new Payment("payment-1", VOUCHER_METHOD, order, new HashMap<>());
+        Payment payment = new Payment("payment-1", PaymentMethod.VOUCHER.getValue(), order, new HashMap<>());
         when(paymentRepository.findById("payment-1")).thenReturn(payment);
 
         Payment result = paymentService.getPayment("payment-1");
@@ -158,8 +157,8 @@ class PaymentServiceTest {
     @Test
     void testGetAllPaymentsReturnsRepositoryResults() {
         List<Payment> payments = new ArrayList<>();
-        payments.add(new Payment("payment-1", VOUCHER_METHOD, order, new HashMap<>()));
-        payments.add(new Payment("payment-2", COD_METHOD, order, new HashMap<>()));
+        payments.add(new Payment("payment-1", PaymentMethod.VOUCHER.getValue(), order, new HashMap<>()));
+        payments.add(new Payment("payment-2", PaymentMethod.COD.getValue(), order, new HashMap<>()));
         when(paymentRepository.findAll()).thenReturn(payments);
 
         List<Payment> result = paymentService.getAllPayments();

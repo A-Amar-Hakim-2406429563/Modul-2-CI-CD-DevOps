@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class OrderRepository {
@@ -12,39 +13,28 @@ public class OrderRepository {
     private List<Order> orderData = new ArrayList<>();
 
     public Order save(Order order) {
-        int i = 0;
-
-        for (Order savedOrder : orderData) {
-            if (savedOrder.getId().equals(order.getId())) {
-                orderData.remove(i);
-                orderData.add(i, order);
+        for (int i = 0; i < orderData.size(); i++) {
+            if (orderData.get(i).getId().equals(order.getId())) {
+                orderData.set(i, order); // Refactor: Pakai set() lebih efisien
                 return order;
             }
-            i += 1;
         }
-
         orderData.add(order);
         return order;
     }
 
     public Order findById(String id) {
-        for (Order savedOrder : orderData) {
-            if (savedOrder.getId().equals(id)) {
-                return savedOrder;
-            }
-        }
-        return null;
+        // Refactor: Menggunakan Stream API
+        return orderData.stream()
+                .filter(savedOrder -> savedOrder.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Order> findAllByAuthor(String author) {
-        List<Order> result = new ArrayList<>();
-
-        for (Order savedOrder : orderData) {
-            if (savedOrder.getAuthor().equals(author)) {
-                result.add(savedOrder);
-            }
-        }
-
-        return result;
+        // Refactor: Menggunakan Stream API
+        return orderData.stream()
+                .filter(savedOrder -> savedOrder.getAuthor().equals(author))
+                .collect(Collectors.toList());
     }
 }
