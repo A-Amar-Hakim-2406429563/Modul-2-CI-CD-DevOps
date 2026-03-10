@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.repository;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
 import id.ac.ui.cs.advprog.eshop.model.Product;
@@ -34,8 +35,8 @@ class PaymentRepositoryTest {
 
     @Test
     void testSavePayment() {
-
-        Payment payment = new Payment("1", "VOUCHER", order, new HashMap<>());
+        // REFACTOR: Menggunakan Enum PaymentMethod.VOUCHER
+        Payment payment = new Payment("1", PaymentMethod.VOUCHER.getValue(), order, new HashMap<>());
 
         repository.save(payment);
 
@@ -46,9 +47,9 @@ class PaymentRepositoryTest {
 
     @Test
     void testFindAll() {
-
-        repository.save(new Payment("1", "VOUCHER", order, new HashMap<>()));
-        repository.save(new Payment("2", "COD", order, new HashMap<>()));
+        // REFACTOR: Menggunakan Enum untuk VOUCHER dan COD
+        repository.save(new Payment("1", PaymentMethod.VOUCHER.getValue(), order, new HashMap<>()));
+        repository.save(new Payment("2", PaymentMethod.COD.getValue(), order, new HashMap<>()));
 
         List<Payment> payments = repository.findAll();
 
