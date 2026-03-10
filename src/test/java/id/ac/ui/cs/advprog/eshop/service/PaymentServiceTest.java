@@ -13,14 +13,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
+
+    private static final String VOUCHER_METHOD = "VOUCHER";
+    private static final String COD_METHOD = "COD";
+    private static final String PAYMENT_STATUS_PENDING = "PENDING";
+    private static final String PAYMENT_STATUS_SUCCESS = "SUCCESS";
+    private static final String PAYMENT_STATUS_REJECTED = "REJECTED";
 
     @InjectMocks
     PaymentServiceImpl paymentService;
@@ -41,6 +51,10 @@ class PaymentServiceTest {
         return products;
     }
 
+    private void mockSaveReturnsPayment() {
+        doAnswer(invocation -> invocation.getArgument(0)).when(paymentRepository).save(any(Payment.class));
+    }
+
     @BeforeEach
     void setUp() {
         order = new Order("1", createProducts(), 100L, "User");
@@ -48,15 +62,108 @@ class PaymentServiceTest {
 
     @Test
     void testAddPayment() {
+        mockSaveReturnsPayment();
+
         Map<String, String> data = new HashMap<>();
         data.put("voucherCode", "ESHOP1234ABC5678");
 
-        Payment payment = new Payment("1", "VOUCHER", order, data);
+        Payment result = paymentService.addPayment(order, VOUCHER_METHOD, data);
 
-        when(paymentRepository.save(any())).thenReturn(payment);
+        assertNotNull(result.getId());
+        assertEquals(VOUCHER_METHOD, result.getMethod());
+        assertEquals(order, result.getOrder());
+        assertEquals(PAYMENT_STATUS_PENDING, result.getStatus());
+    }
 
-        Payment result = paymentService.addPayment(order, "VOUCHER", data);
+    @Test
+    void testAddPaymentWithValidVoucherSetsSuccessStatus() {
+        mockSaveReturnsPayment();
 
-        assertEquals("VOUCHER", result.getMethod());
+        Map<String, String> data = new HashMap<>();
+        data.put("voucherCode", "ESHOP1234ABC5678");
+
+        Payment result = paymentService.addPayment(order, VOUCHER_METHOD, data);
+
+        assertEquals(PAYMENT_STATUS_SUCCESS, result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentWithInvalidVoucherSetsRejectedStatus() {
+        mockSaveReturnsPayment();
+
+        Map<String, String> data = new HashMap<>();
+        data.put("voucherCode", "INVALID");
+
+        Payment result = paymentService.addPayment(order, VOUCHER_METHOD, data);
+
+        assertEquals(PAYMENT_STATUS_REJECTED, result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentWithValidCodKeepsPendingStatus() {
+        mockSaveReturnsPayment();
+
+        Map<String, String> data = new HashMap<>();
+        data.put("address", "Jl. Margonda Raya No. 1");
+        data.put("deliveryFee", "15000");
+
+        Payment result = paymentService.addPayment(order, COD_METHOD, data);
+
+        assertEquals(PAYMENT_STATUS_PENDING, result.getStatus());
+    }
+
+    @Test
+    void testAddPaymentWithEmptyCodAddressSetsRejectedStatus() {
+        mockSaveReturnsPayment();
+
+        Map<String, String> data = new HashMap<>();
+        data.put("address", "");
+        data.put("deliveryFee", "15000");
+
+        Payment result = paymentService.addPayment(order, COD_METHOD, data);
+
+        assertEquals(PAYMENT_STATUS_REJECTED, result.getStatus());
+    }
+
+    @Test
+    void testSetStatusToSuccessUpdatesOrderStatus() {
+        Payment payment = new Payment("1", VOUCHER_METHOD, order, new HashMap<>());
+
+        Payment result = paymentService.setStatus(payment, PAYMENT_STATUS_SUCCESS);
+
+        assertEquals(PAYMENT_STATUS_SUCCESS, result.getStatus());
+        assertEquals(PAYMENT_STATUS_SUCCESS, order.getStatus());
+    }
+
+    @Test
+    void testSetStatusToRejectedUpdatesOrderStatusToFailed() {
+        Payment payment = new Payment("1", COD_METHOD, order, new HashMap<>());
+
+        Payment result = paymentService.setStatus(payment, PAYMENT_STATUS_REJECTED);
+
+        assertEquals(PAYMENT_STATUS_REJECTED, result.getStatus());
+        assertEquals("FAILED", order.getStatus());
+    }
+
+    @Test
+    void testGetPaymentReturnsRepositoryResult() {
+        Payment payment = new Payment("payment-1", VOUCHER_METHOD, order, new HashMap<>());
+        when(paymentRepository.findById("payment-1")).thenReturn(payment);
+
+        Payment result = paymentService.getPayment("payment-1");
+
+        assertEquals(payment, result);
+    }
+
+    @Test
+    void testGetAllPaymentsReturnsRepositoryResults() {
+        List<Payment> payments = new ArrayList<>();
+        payments.add(new Payment("payment-1", VOUCHER_METHOD, order, new HashMap<>()));
+        payments.add(new Payment("payment-2", COD_METHOD, order, new HashMap<>()));
+        when(paymentRepository.findAll()).thenReturn(payments);
+
+        List<Payment> result = paymentService.getAllPayments();
+
+        assertEquals(2, result.size());
     }
 }
